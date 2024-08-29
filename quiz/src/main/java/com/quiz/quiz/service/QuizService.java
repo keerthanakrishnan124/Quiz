@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.quiz.quiz.model.QuestionView;
 import com.quiz.quiz.model.Questions;
 import com.quiz.quiz.model.Quiz;
+import com.quiz.quiz.model.Response;
 import com.quiz.quiz.repository.QuestionRepository;
 import com.quiz.quiz.repository.QuizRepository;
 
@@ -72,6 +73,30 @@ public class QuizService {
 		return new ResponseEntity<>(new ArrayList<>(),HttpStatus.BAD_REQUEST);
 		
 		
+	}
+
+	public ResponseEntity<Integer> calculateResult(int id, List<Response> responses) {
+		try {
+		Optional<Quiz> quiz=quizRepo.findById(id);
+		List<Questions> questions=quiz.get().getQuestions();
+		
+		int rightAnswer=0;
+		int i=0;
+		
+		for(Response r:responses) {
+			if(r.getResponse().equals(questions.get(i).getRightAnswer())) {
+				rightAnswer++;
+			}
+			i++;
+		}
+		return new ResponseEntity<>(rightAnswer,HttpStatus.OK);
+		
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return new ResponseEntity<>(0,HttpStatus.BAD_REQUEST);
 	}
 
 	
